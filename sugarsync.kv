@@ -1,0 +1,188 @@
+#:kivy 1.4.1              
+# line above needed at the beginning of each *.kv file
+
+
+<MyWidget>:
+# This class is for experimenting functionality, etc.
+	canvas:
+        Color:
+            rgb: .5, .5, .5
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Color: 
+        	rgb: 1, 1, 1
+        Rectangle:
+        	pos: 0, 0
+        	size: 100, 100
+    Label:
+    	color: [.3, .3, .3, 1]
+	    text: 'Hello world'
+	    size: 100, 30
+	    font_size: '15sp'
+	    size_hint: 0, 0
+#	    height: self.texture_size[1] + dp(10)
+
+
+[LoginLabel@Label]:
+    # line above is syntax for creating a template
+    #canvas.before:
+    ## canvas is used only for debugging
+    #    Color:
+    #        rgb: 1, 0, 0
+    #    Rectangle:
+    #        pos: self.pos
+    #        size: 300, 30
+    size_hint: None, None            # important, influences position
+    pos_hint: {'center_x': 0.5}      # works only with FloatLayout & BoxLayout and Window
+    color: [.2, .2, .2, 1]           # Text color, in the format (r, g, b, a), default [1,1,1,1] 
+    size: 300, 30                    # widget bounding box size, different from text bounding box      
+    text: ctx.text                   # ctx is a context obj. from the widget instance
+    text_size: 300, 30               # text bounding box size, by default there isn't any
+    #font_size: 15
+    halign: 'left'                 # 'left' | 'center' | 'right'
+    valign: 'middle'                 # 'bottom' | 'middle' | 'top'
+    # halign and valign work only with text_size other than None, None
+
+[LoginTextInput@TextInput]:
+    id: ctx.id
+    pos_hint: {'center_x': 0.5}      # works only with FloatLayout & BoxLayout and Window
+    size_hint_y: None   # very important, otherwise text input will span on multiple lines
+    size_hint_x: None   # very important, otherwise text input will have maximum width
+    size: 300, 30        # size: (width, height)	
+    multiline: False
+    password: ctx.password
+
+[HSeparator@Widget]:
+    # Syntax for creating a template [TemplateName@BaseClass1, BaseClass2, ...]                 
+    size_hint_y: None
+    height: 20
+
+[LoginButton@Button]:
+    # Button inherits Label, so it can use the same props, like color, etc.
+    id: ctx.id
+    size_hint: None, None
+    size: 100, 40        # size: (width, height)
+    pos_hint: ctx.pos_hint
+    text: ctx.text 
+    font_size: 15  
+    
+
+<LoginPage>:
+    # with braces <,>, this is a rule that applies to LoginPage objs.
+    # without braces, this is the root widget. One at most per app.
+   
+    # pass data to the *.py file, as these Object Properties will be 
+    # available in the LoginPage class instance:
+    user_email: email
+    user_password: password
+    login: login
+    sign_up: sign_up
+
+    # set background color:
+	canvas:
+		Color:
+	        rgb: .7, .7, .7
+		Rectangle:               
+		# this is what it will be drawn on the canvas and it's the background
+            pos: self.pos                   # self refers to Rectangle widget, root to LoginPage
+            size: self.size
+    BoxLayout:
+    	orientation: 'vertical'
+    	padding: 10
+    	spacing: 0                          # distance in pixels between BoxLayout children
+
+		Image:
+			size_hint: None, None                     # important; 
+			# The default size_hint is (1, 1). If the parent is a Layout, then the widget size will be the parent/layout size.
+			source: 'images/Logo_120x48.png'
+			size: 120, 48          # width, height
+			pos_hint: {'center_x': .5}
+
+			# pos: x, y (bottom left corner) => top = y+height, right= x+width
+			# pos: center    because center = center_x, center_y
+
+	    LoginLabel:
+            # LoginLabel is a template		 
+            text: 'Email:'
+
+		LoginTextInput:
+			id: email
+            password: False
+		
+        HSeparator:
+            # make space between Email and Password widgets
+            canvas:
+                Color:  
+                    rgb: root.canvas.Color.rgb        
+                Rectangle: 
+                    size: self.size
+                    pos: self.pos
+
+        LoginLabel:
+			text: 'Password:'
+			
+		LoginTextInput:
+            # LoginTextInput is a template
+			id: password
+			password: True
+			
+		FloatLayout:
+			# FloatLayout honors only Widget.pos_hint and Widget.size_hint
+            #canvas:
+            ## here, canvas is used only for debugging
+			#    Color:
+			#        rgb: 0,1,0
+			#    Rectangle:
+			#        pos: self.pos
+			#        size: self.size	
+			size_hint: .5, 1
+			pos_hint: {'center_x': 0.5}
+
+            LoginButton:
+                # Button inherits Label, so it can use the same props, like color, etc.
+                id: login                           
+                # you can use an id(in this case 'login') as a keyword
+	            text: 'Login'
+                pos_hint: {'x': .115, 'top': .95}
+
+            LoginButton:
+                id: sign_up        
+                text: 'Sign up'
+                pos_hint: {'right': .89, 'top': .95}
+
+
+<UserWorkspace>:
+    # set background color:
+	canvas:
+		Color:
+	        rgb: .7, .7, .7
+		Rectangle:               
+		# this is what it will be drawn on the canvas and it's the background
+            pos: self.pos                   # self refers to Rectangle widget, root to LoginPage
+            size: self.size
+    Label:
+        id: storage_lbl
+        text: 'Storage:'
+        size_hint: None, None
+        size: 50, 20
+        pos: 6, 2
+        font_size: 10                       # default 12
+        color: [.2, .2, .2, 1]
+
+    ProgressBar:
+        id: usage_bar
+        max: 2048                  #root.limit 
+        value: 512                 #root.usage
+        size_hint: None, None
+        pos: storage_lbl.right + 10, 0
+        size: 100, 20
+
+    Label:
+        text: '0.51 GB used | 1.53 GB free'   #root.storage_usage_in_GB | root.used_storage_in_GB
+        size_hint: None, None
+        size: 160, 20
+        pos: usage_bar.right + 10, 2
+        font_size: 10
+        color: [.2, .2, .2, 1]
+        

@@ -21,9 +21,7 @@ class TestAuth(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()              # that's all there is to running tests 
-# OR 
-# select only some test classes to be run:
+    unittest.main()              # that's all there is to running tests OR
 #    suite = unittest.TestLoader().loadTestsFromTestCase(YourTestCaseChildClass)
 #    unittest.TextTestRunner(verbosity=2).run(suite)
 
